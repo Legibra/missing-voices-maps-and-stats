@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+        <link rel="manifest" href="site.webmanifest">
+        <link rel="apple-touch-icon" href="icon.png">
+
+
+        <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.css" />
+        <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.Default.css" />
+        <link href='https://api.mapbox.com/mapbox.js/v2.2.4/mapbox.css' rel='stylesheet' />
+
+        <!-- Place favicon.ico in the root directory -->
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel='stylesheet'/>
+
+
+        <link rel="stylesheet" href="css/styles.css">
+
+    </head>
+    <body>
+        <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+
+        <div class="container-fluid">
+
+                <div class="row mt-5 mb-5">
+                    <div class="col-md-6">
+                        <div id='map'></div>
+                    </div>
+                    <div class="col-md-6 p-5">
+                        <div class="row">
+                            <h3>FACTS AND FIGURES</h3>
+                            <p>Kenya has been ranked top in Africa in cases of police shootings and killing of civilians
+                                    and forced disappearnces according to a report by Amnesty International shows.The
+                                    report indicates that by October 2016, a total of 122 extrajudicial killings had been reported
+                                    in Kenya, out of 177 cases in Africa. However, the figure could have been hire
+                                    but there was lack of official database. of police killings or enforced disappearances,
+                                    says the report. of police killings or enforced disappearances, says the report.</p>
+                        </div>
+                        
+                        <div id="exTab1" class="row mt-5">	
+                                <ul  class="col-md-12 nav nav-pills">
+                                    <li class="">
+                                        <a href="#1a" data-toggle="tab" class="active">STATUS</a>
+                                    </li>
+                                    <li>
+                                        <a href="#2a" data-toggle="tab">Gender</a>
+                                    </li>
+                                    <li>
+                                        <a href="#3a" data-toggle="tab">Location</a>
+                                    </li>
+                                </ul>
+                                        
+                                <div class="col-md-12 tab-content clearfix mt-5">
+                                    <div class="tab-pane active" id="1a">
+                                        <div class="radio">
+                                            <label><input type="radio" name="status_radio"> ALL</label>
+                                        </div>
+                                        <div class="radio">
+                                            <label><input type="radio" class="status_radio" name="status_radio" value="Dead"> KILLED</label>
+                                        </div>
+                                        <div class="radio">
+                                            <label><input type="radio" class="status_radio" name="status_radio" value="Missing"> DISAPPEARED</label>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="2a">
+                                            <div class="radio">
+                                                <label><input type="radio" value="M" class="gender_radio" name="gender_radio"> MALE</label>
+                                            </div>
+                                            <div class="radio">
+                                                <label><input type="radio" value="F" class="gender_radio" name="gender_radio"> FEMALE</label>
+                                            </div>
+                                    </div>
+                                    <div class="tab-pane" id="3a">
+                                        <div class="col-md-6">
+                                            <select class="form-control input-block" id="kenya_counties">
+                                                <option>Location</option>
+                                                <option value="NAIROBI">Nairobi County</option>
+                                                <option value="KIAMBU">Kiambu County</option>
+                                                <option value="NAKURU">Nakuru County</option>
+                                                <option value="KISUMU">Kisumu County</option>
+                                                <option value="MERU">Meru County</option>
+                                                <option value="GARISA">Garisa Region</option>
+                                                <option value="MOMBASA">Mombasa County</option>
+                                                <option value="KWALE">Kwale County</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row col-md-12">
+                            <p class="text-small">Data Source: Missing Voices</p>
+                        </div>
+                    </div>    
+
+                </div>
+
+                <div class="row">
+                        <div class="filter-form col-md-12">
+                          <form class="form-inline col-md-12">
+                              <div class="form-group mx-sm-3 mb-4 mt-4 col-md-3">
+                                <label for="inputPassword2" class="sr-only">FILTER BY</label>
+                                <select class="form-control" id="map_status">
+                                  <option>Missing/Dead</option>
+                                  <option value="Missing">Missing</option>
+                                  <option value="Dead">Dead</option>
+                                </select>
+                              </div>
+                              <div class="form-group mx-sm-3 mb-4 mt-4 col-md-3">
+                                  <select class="form-control" id="map_gender">
+                                    <option>Gender</option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                  </select>
+                              </div>
+                              <div class="form-group mx-sm-2 mb-4 mt-4 col-md-2">
+                                <select class="form-control input-block" id="kenya_counties">
+                                  <option>Location</option>
+                                  <option value="NAIROBI">Nairobi County</option>
+                                  <option value="KIAMBU">Kiambu County</option>
+                                  <option value="NAKURU">Nakuru County</option>
+                                  <option value="KISUMU">Kisumu County</option>
+                                  <option value="MERU">Meru County</option>
+                                  <option value="GARISA">Garisa Region</option>
+                                  <option value="MOMBASA">Mombasa County</option>
+                                  <option value="KWALE">Kwale County</option>
+                                </select>
+                              </div>
+                              <div class="form-group mx-sm-2 mb-4 mt-4 col-md-2">
+                                <button id="button" class="form-control">Uncluster</button>
+                              </div>
+                            </form>
+                          </div>
+                      </div>
+                      <div class="row">
+                        <!-- <div id='map'></div> -->
+                      </div>
+
+            <div class="row">
+                <div id="bargraph" class="col-md-12" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div id="linegraph"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div id="piechart" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="bubblechart" class="col-md-12" style="min-width: 310px; height: 400px; max-width: 800px; margin: 0 auto"></div>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        <script src="js/vendor/modernizr-3.5.0.min.js"></script>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/bargraph.js"></script>
+        <script src="js/main.js"></script>
+        <!-- <script src="js/bootstrap.js"></script> -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+        <script src='https://api.mapbox.com/mapbox.js/v2.2.4/mapbox.js'></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/leaflet.markercluster.js'></script>
+        <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
+        <script src="lib/jquery-csv-0.71.js"></script>
+        <script src="js/markers_1.js"></script>
+
+        <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+        <script>
+            window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+            ga('create','UA-XXXXX-Y','auto');ga('send','pageview')
+        </script>
+        <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+    </body>
+</html>
