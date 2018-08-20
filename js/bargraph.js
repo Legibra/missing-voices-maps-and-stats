@@ -46,7 +46,7 @@ $.ajax({
 
       var result = foo(year_count);
 
-    //   console.log(result[0]);
+       console.log(result[0]);
     //   console.log(result[1]); 
 
       //console.log(ages);
@@ -56,7 +56,7 @@ $.ajax({
                 type: 'column'
             },
             title: {
-                text: 'Missing Persons January, 2012 to April, 2018'
+                text: 'Missing Persons, 2001 to, 2018'
             },
             subtitle: {
                 text: ''
@@ -87,7 +87,7 @@ $.ajax({
             },
             series: [
                 {
-                    name: 'Age',
+                    name: 'Years',
                     data: result[1]
                 }
             ]

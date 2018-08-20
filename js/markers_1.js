@@ -1,7 +1,7 @@
 $(document).ready(function(){
     L.mapbox.accessToken = 'pk.eyJ1IjoiZ3JlZ2dhd2F0dCIsImEiOiJjaWppNGpzZm4wMnZxdHRtNWNuaHFsOWE5In0.XZJCOdDSALLBYWBt4bHmlw';
     var map = L.mapbox.map('map', 'mapbox.streets')
-                      .setView([1, 36], 6)
+                      .setView([1, 36], 6);
     var unclustered = L.mapbox.featureLayer();
     var clustered = L.markerClusterGroup();
     var counties = "";
@@ -11,7 +11,7 @@ $(document).ready(function(){
     var getSelectedGender = "";
     var getSelectedStatus = "";
   
-    var projectPerCounty = {}
+    var projectPerCounty = {};
   
     var myIcon = L.mapbox.marker.icon({
         'marker-size': 'small',
@@ -19,9 +19,66 @@ $(document).ready(function(){
     })
   
     function popUp(element){
-      return "<img src='images/kenyamap.png' width='100%'/>" + "</br></br>" +
-       element["Description (Status) Summary of Incident"] + "<br/>" +
-        "<br/>" + "<span class='map-date'>" + element["Month/ Date"] + '-' + element["Year"] + "</span>";
+      var occupation = "";
+      var gender;
+      var source;
+      var status;
+      var description;
+
+      if (element["Occupation"] !== "") {
+        occupation = element["Occupation"];
+      }else{
+        occupation = "Unknown";
+      }
+      
+      if (element["Source of Report"] !== "") {
+        source = element["Source of Report"];
+      }else{
+        source = "Unknown";
+      }
+      
+      if (element["Current status (missing, dead?) "] !== "") {
+        status = element["Current status (missing, dead?) "];
+      }else{
+        status = "Unknown";
+      }
+      
+      if (element["Current status (missing, dead?) "] !== "") {
+        status = element["Current status (missing, dead?) "];
+      }else{
+        status = "Unknown";
+      }
+      
+      if (element["Description (Status) Summary of Incident"] !== "") {
+        description = element["Description (Status) Summary of Incident"];
+      }else{
+        description = "Unknown";
+      }
+
+
+
+      if (element["Gender"] == "M") {
+        gender = "Male";
+      } else if(element["Gender"] == "F"){
+        gender = "Female";
+      }else{
+        gender = "Unknown";
+      }
+
+      return "<b>Name: " +
+        element["Name of person"] + "</b><br/>"
+        + "<b>Location: </b>" + element[" Province"] + "<br/>"
+        + "<b>Status</b>: " + status
+       + "</br></br>" +
+       description + "<br/>" +
+        "<br/>"
+        + "<b>Gender: </b>" + gender + "<br/>"
+        + "<b>Source: </b>" + source + "<br/>"
+        + "<b>Occupation: </b>"  + occupation + "<br/><br/>"
+         + "<span class='map-date'><b>" +
+          element["Month/ Date"] +
+           '-' + element["Year"] +
+            "</b></span>";
     }
   
     function drawCounties(){
@@ -46,7 +103,7 @@ $(document).ready(function(){
         color: '#F15A24',
         weight: 1,
         fillOpacity: 1,
-        fillColor: '#00800030'
+        fillColor: 'transparent'
       };
     }
   
@@ -75,11 +132,12 @@ $(document).ready(function(){
           from + (to ? '&ndash;' + to : '+')) + '</li>';
       }
   
-      return '<span>Missing Persons Per County(Age)</span><ul>' + labels.join('') + '</ul>';
+      return '';
     }
   
   
     function populateClusteredMap(county_name,gender,status) {
+
         $.ajax({
         type: "GET",
         url: "http://localhost/missing_voices_maps/data/m_voices.csv",
@@ -127,11 +185,11 @@ $(document).ready(function(){
                   clustered.addLayer(marker)
                   
                 }
-              }else{
+              }else if(county_name == "" && gender == "" && status == ""){
                  var marker = L.marker([lat_long[0], lat_long[1]], {
                     icon: myIcon
-                  }).bindPopup(popUp(element))
-                  clustered.addLayer(marker)
+                  }).bindPopup(popUp(element));
+                  clustered.addLayer(marker);
               }
             }
           });
@@ -155,7 +213,7 @@ $(document).ready(function(){
       }
     });
   
-    //populateClusteredMap("","",""); 
+    populateClusteredMap("","",""); 
   
     $( "#kenya_counties" ).change(function() {
       //map.removeLayer(clustered);
@@ -178,13 +236,11 @@ $(document).ready(function(){
       populateClusteredMap("","",getSelectedStatus); 
     });
   
-
     //homepage map
     $( ".gender_radio" ).change(function() {
       //map.removeLayer(clustered);
       clustered.clearLayers();
       getSelectedGender = $("input[name=gender_radio]:checked").val();
-      //alert(getSelectedGender);
       populateClusteredMap("",getSelectedGender,""); 
     });
   

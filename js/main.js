@@ -221,7 +221,7 @@ $.ajax({
         Highcharts.chart('linegraph', {
 
             title: {
-                text: 'Missing Persons In All Regions In Kenya'
+                text: 'Missing/Dead Persons In All Regions In Kenya'
             },
 
             subtitle: {
@@ -230,7 +230,7 @@ $.ajax({
 
             yAxis: {
                 title: {
-                    text: 'Number of Missing Persons'
+                    text: 'Number of Missing/Dead Persons'
                 }
             },
             legend: {
@@ -303,7 +303,7 @@ $.ajax({
                 type: 'pie'
             },
             title: {
-                text: 'Missing Person By Regional , 2008 to 2018'
+                text: 'Missing/Dead Person By Regional , 2008 to 2018'
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -366,7 +366,7 @@ $.ajax({
                 zoomType: 'xy'
             },
             title: {
-                text: 'Age By Gender of Missing Persons'
+                text: 'Age By Gender of Missing/Dead Persons'
             },
             subtitle: {
                 text: ''
@@ -382,7 +382,7 @@ $.ajax({
             },
             yAxis: {
                 title: {
-                    text: ''
+                    text: 'Number Of Persons'
                 }
             },
             legend: {
