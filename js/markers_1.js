@@ -1,23 +1,28 @@
 $(document).ready(function(){
     L.mapbox.accessToken = 'pk.eyJ1IjoiZ3JlZ2dhd2F0dCIsImEiOiJjaWppNGpzZm4wMnZxdHRtNWNuaHFsOWE5In0.XZJCOdDSALLBYWBt4bHmlw';
-    var map = L.mapbox.map('map', 'mapbox.streets')
+     map = L.mapbox.map('map', 'mapbox.streets')
                       .setView([1, 36], 6);
     var unclustered = L.mapbox.featureLayer();
     var clustered = L.markerClusterGroup();
     var counties = "";
     var county_name,gender,status = "";
-  
+
     var getSelectedCounty = "";
     var getSelectedGender = "";
     var getSelectedStatus = "";
-  
+
     var projectPerCounty = {};
-  
+
     var myIcon = L.mapbox.marker.icon({
         'marker-size': 'small',
         'marker-color': '#F15A24'
     })
-  
+
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+     map.tap.disable();
+     map.dragging.disable();
+    }
+
     function popUp(element){
       var occupation = "";
       var gender;
@@ -26,29 +31,29 @@ $(document).ready(function(){
       var description;
 
       if (element["Occupation"] !== "") {
-        occupation = element["Occupation"];
+        occupation = "<b>Occupation: </b>"  + element["Occupation"]+"<br>";
       }else{
-        occupation = "Unknown";
+        occupation = "";
       }
-      
+
       if (element["Source of Report"] !== "") {
         source = element["Source of Report"];
       }else{
         source = "Unknown";
       }
-      
+
       if (element["Current status (missing, dead?) "] !== "") {
         status = element["Current status (missing, dead?) "];
       }else{
         status = "Unknown";
       }
-      
+
       if (element["Current status (missing, dead?) "] !== "") {
         status = element["Current status (missing, dead?) "];
       }else{
         status = "Unknown";
       }
-      
+
       if (element["Description (Status) Summary of Incident"] !== "") {
         description = element["Description (Status) Summary of Incident"];
       }else{
@@ -66,25 +71,23 @@ $(document).ready(function(){
       }
 
       return "<b>Name: " +
-        element["Name of person"] + "</b><br/>"
+        element["Name of person"] + "</b>"
+        + "</br></br>" +
+        description + "<br/><br>"
+        + "<b>Status</b>: " + status+"<br>"
         + "<b>Location: </b>" + element[" Province"] + "<br/>"
-        + "<b>Status</b>: " + status
-       + "</br></br>" +
-       description + "<br/>" +
-        "<br/>"
-        + "<b>Gender: </b>" + gender + "<br/>"
-        + "<b>Source: </b>" + source + "<br/>"
-        + "<b>Occupation: </b>"  + occupation + "<br/><br/>"
+        + occupation
+        + "<b>Gender: </b>" + gender+"<br/><br/>"
          + "<span class='map-date'><b>" +
           element["Month/ Date"] +
            '-' + element["Year"] +
             "</b></span>";
     }
-  
+
     function drawCounties(){
       $.ajax({
         type: "GET",
-        url: "http://localhost/missing_voices_maps/data/counties.geojson",
+        url: "http://localhost/Legibra/missing-voices-maps-and-stats/data/counties.geojson",
         dataType: "text",
         success: function(data){
           counties = JSON.parse(data)
@@ -94,8 +97,8 @@ $(document).ready(function(){
         }
       });
     }
-  
-  
+
+
     function getStyle(feature) {
       return {
         weight: 2,
@@ -106,7 +109,7 @@ $(document).ready(function(){
         fillColor: 'transparent'
       };
     }
-  
+
     function getColor(d) {
       return d > 300 ? '#8c2d04' :
           d > 200  ? '#cc4c02' :
@@ -117,34 +120,36 @@ $(document).ready(function(){
           d > 20   ? '#fff7bc' :
           '#ffffe5';
     }
-  
+
     function getLegendHTML() {
       var grades = [0, 20, 30, 50, 70, 100, 200, 300],
       labels = [],
       from, to;
-  
+
       for (var i = 0; i < grades.length; i++) {
         from = grades[i];
         to = grades[i + 1];
-  
+
         labels.push(
           '<li><span class="swatch" style="background:' + getColor(from + 1) + '"></span> ' +
           from + (to ? '&ndash;' + to : '+')) + '</li>';
       }
-  
+
       return '';
     }
-  
-  
+
+
     function populateClusteredMap(county_name,gender,status) {
 
         $.ajax({
         type: "GET",
-        url: "http://localhost/missing_voices_maps/data/m_voices.csv",
+        url: "http://localhost/Legibra/missing-voices-maps-and-stats/data/m_voices.csv",
         dataType: "text",
         success: function(data){
           projectPerCounty = {}
           locations = $.csv.toObjects(data);
+
+          // console.log(locations);
           locations.forEach(function(element, index){
             if(typeof projectPerCounty[element[" Province"]] === 'undefined'){
               projectPerCounty[element[" Province"]] = 1
@@ -157,33 +162,33 @@ $(document).ready(function(){
             if(typeof lat_long[0] === 'undefined' || typeof lat_long[1] === 'undefined'){
               console.log(element.EPGeoName + " does not have valid location data, skipping")
             } else {
-  
+
               if (county_name !== "") {
                 if (element[" Province"].toUpperCase() == county_name) {
-    
+
                   var marker = L.marker([lat_long[0], lat_long[1]], {
                     icon: myIcon
                   }).bindPopup(popUp(element))
                   clustered.addLayer(marker)
-                  
+
                 }
               } else if( gender !== "" ){
                 if (element["Gender"] == gender) {
-    
+
                   var marker = L.marker([lat_long[0], lat_long[1]], {
                     icon: myIcon
                   }).bindPopup(popUp(element))
                   clustered.addLayer(marker)
-                  
+
                 }
               } else if( status !== "" ){
                 if (element["Current status (missing, dead?) "] == status) {
-    
+
                   var marker = L.marker([lat_long[0], lat_long[1]], {
                     icon: myIcon
                   }).bindPopup(popUp(element))
                   clustered.addLayer(marker)
-                  
+
                 }
               }else if(county_name == "" && gender == "" && status == ""){
                  var marker = L.marker([lat_long[0], lat_long[1]], {
@@ -193,14 +198,14 @@ $(document).ready(function(){
               }
             }
           });
-  
+
           drawCounties();
           map.legendControl.addLegend(getLegendHTML());
           map.addLayer(clustered);
         }
       });
     }
-  
+
     $("#button").click(function(){
       if(this.innerHTML == "Uncluster"){
         populateUnclusteredMap()
@@ -212,44 +217,48 @@ $(document).ready(function(){
         this.innerHTML = "Uncluster"
       }
     });
-  
-    populateClusteredMap("","",""); 
-  
+
+    populateClusteredMap("","","");
+
     $( "#kenya_counties" ).change(function() {
       //map.removeLayer(clustered);
       clustered.clearLayers();
+      map.setZoom(6)
       getSelectedCounty = $("#kenya_counties option:selected").val();
-      populateClusteredMap(getSelectedCounty,"",""); 
+      populateClusteredMap(getSelectedCounty,"","");
     });
-  
+
     $( "#map_gender" ).change(function() {
       //map.removeLayer(clustered);
       clustered.clearLayers();
+      map.setZoom(6)
       getSelectedGender = $("#map_gender option:selected").val();
-      populateClusteredMap("",getSelectedGender,""); 
+      populateClusteredMap("",getSelectedGender,"");
     });
-  
+
     $( "#map_status" ).change(function() {
       //map.removeLayer(clustered);
       clustered.clearLayers();
+      map.setZoom(6)
       getSelectedStatus = $("#map_status option:selected").val();
-      populateClusteredMap("","",getSelectedStatus); 
+      populateClusteredMap("","",getSelectedStatus);
     });
-  
+
     //homepage map
     $( ".gender_radio" ).change(function() {
       //map.removeLayer(clustered);
+      map.setZoom(6)
       clustered.clearLayers();
       getSelectedGender = $("input[name=gender_radio]:checked").val();
-      populateClusteredMap("",getSelectedGender,""); 
+      populateClusteredMap("",getSelectedGender,"");
     });
-  
+
     $( ".status_radio" ).change(function() {
       //map.removeLayer(clustered);
+      map.setZoom(6)
       clustered.clearLayers();
       getSelectedStatus = $("input[name=status_radio]:checked").val();
-      populateClusteredMap("","",getSelectedStatus); 
+      populateClusteredMap("","",getSelectedStatus);
     });
-    
+
   });
-  
