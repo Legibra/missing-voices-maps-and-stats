@@ -158,19 +158,22 @@ $(document).ready(function(){
     //populateClusteredMap("","",""); 
   
     $( "#kenya_counties" ).change(function() {
-      map.removeLayer(clustered);
+      //map.removeLayer(clustered);
+      clustered.clearLayers();
       getSelectedCounty = $("#kenya_counties option:selected").val();
       populateClusteredMap(getSelectedCounty,"",""); 
     });
   
     $( "#map_gender" ).change(function() {
-      map.removeLayer(clustered);
+      //map.removeLayer(clustered);
+      clustered.clearLayers();
       getSelectedGender = $("#map_gender option:selected").val();
       populateClusteredMap("",getSelectedGender,""); 
     });
   
     $( "#map_status" ).change(function() {
-      map.removeLayer(clustered);
+      //map.removeLayer(clustered);
+      clustered.clearLayers();
       getSelectedStatus = $("#map_status option:selected").val();
       populateClusteredMap("","",getSelectedStatus); 
     });
@@ -178,14 +181,16 @@ $(document).ready(function(){
 
     //homepage map
     $( ".gender_radio" ).change(function() {
-      map.removeLayer(clustered);
+      //map.removeLayer(clustered);
+      clustered.clearLayers();
       getSelectedGender = $("input[name=gender_radio]:checked").val();
       //alert(getSelectedGender);
       populateClusteredMap("",getSelectedGender,""); 
     });
   
     $( ".status_radio" ).change(function() {
-      map.removeLayer(clustered);
+      //map.removeLayer(clustered);
+      clustered.clearLayers();
       getSelectedStatus = $("input[name=status_radio]:checked").val();
       populateClusteredMap("","",getSelectedStatus); 
     });
